@@ -1,10 +1,32 @@
+const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
-const moment = require('moment');
 const expretions = {
     "fullname":/^[a-zA-ZáÁúÚíÍéÉóÓñÑ ]{10,40}$/,
     "email":/^[a-zA-Z0-9.,_-]{5,30}@[a-zA-Z0-9-_]{3,15}\.[a-zA-Z.]{3,10}$/,
     "password":/^.{8,40}$/
+}
+let transport = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    auth: {
+        user: 'juandaniel200031@gmail.com',
+        pass: 'ynnq slzx ymxj frta'
+    }
+});
+function sendEmail(to, subject, html, result) {
+    let mailOptions = {
+        from: 'juandaniel200031@gmail.com',
+        to,
+        subject,
+        html
+    }
+    transport.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return result(`Error sending email:${error}`, null);
+        }
+        result(null, `Email successfully sent:${info.messageId}`);
+    });
 }
 const exists = (objectValues) => {
     const arrayCamps = Object.keys(expretions);
@@ -20,8 +42,13 @@ const checkCamps = (objectValues) => {
         invalidCamps:result
     }
 }
-const getToken = (user) => {
-    const token = jwt.sign({ data:user}, keys.secretOrKey);
+const getToken = ({user, dateExpire=false}) => {
+    let configToken = {
+        exp:Math.floor(Date.now() / 1000) + (60 * 60),
+        data:user
+    }
+    if(!dateExpire) delete configToken.exp;
+    const token = jwt.sign(configToken, keys.secretOrKey);
     return token;
 }
 const decodeToken = (token) => {
@@ -53,5 +80,6 @@ module.exports = {
     getToken, 
     decodeToken, 
     order,
-    extractIdContacts
+    extractIdContacts,
+    sendEmail
 }

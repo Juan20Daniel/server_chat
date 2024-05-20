@@ -14,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended:true
 }));
+app.use(express.static(__dirname + '/public'));
 app.use(cors());
 app.use(session({
     secret: keys.secretOrKey,
@@ -24,7 +25,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./src/config/passport')(passport);
 app.disable('x-powered-by');
-app.set('port', PORT);  
+app.set('port', PORT); 
+
 app.use("/api/v1", v1Routes);
 
 server.listen(PORT, 'localhost', () => {
