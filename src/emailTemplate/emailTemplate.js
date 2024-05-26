@@ -1,5 +1,5 @@
 const emailTemplate = (token) => {
-    const url = `http://localhost:3001/reset-password?token=${token}`
+    const url = `http://localhost:3001/form-layout/reset-password?token=${token}`
     return `
         <!DOCTYPE html>
         <html lang="es">

@@ -26,4 +26,10 @@ const bodyEmail = (req, res, next) => {
     if(result) return next();
     return res.status(500).json({success:false, message:"El email no es valído"});
 }
-module.exports = { paramEmail, paramPassword, bodyEmail };
+const bodyPassword = (req, res, next) => {
+    const { password } = req.body;
+    let result = isValid('password', password);
+    if(result) return next();
+    return res.status(500).json({success:false, message:"La contraseña no es valída"});
+}
+module.exports = { paramEmail, paramPassword, bodyEmail, bodyPassword };

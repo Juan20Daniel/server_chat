@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs');
 const Users = require('../services/users');
 const emailTemplate = require('../emailTemplate/emailTemplate');
-const { getToken, sendEmail } = require('../helpers/helpers');
+const Auth = require('../services/auth');
+const { getToken, sendEmail, decodeToken } = require('../helpers/helpers');
 
 module.exports = {
     Login(req, res) {
@@ -41,6 +42,16 @@ module.exports = {
                 if(err) return res.status(500).json({success:false, message:"Error al enviar el correo", error:err});
                 res.status(200).json({success:true, message:result});
             });
+        });
+    },
+    UpdatePassword(req, res) {
+        const { authorization } = req.headers;
+        const token = authorization.split(' ')[1];
+        const decodedToken = decodeToken(token);
+        const { password } = req.body;
+        Auth.updatePassword(decodedToken.idUser, password, (err, result) => {
+            if(err) return res.status(500).json({success:false, message:"Error al cambiar la contraseña", error:err});
+            res.status(200).json({message:'La contraseña se ha actualizado', result});
         });
     }
 }
