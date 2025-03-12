@@ -20,7 +20,7 @@ let transport = nodemailer.createTransport({
     port: 587,
     auth: {
         user: 'juandaniel200031@gmail.com',
-        pass: 'ynnq slzx ymxj frta'
+        pass: ''
     }
 });
 function sendEmail(to, subject, html, result) {
